@@ -4,6 +4,7 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
 from .models import Article
 from .serializers import ArticleSerializer
+from rest_framework.decorators import api_view
 
 @csrf_exempt
 def article_list(request):
@@ -36,8 +37,8 @@ def article(request, pk):
         return JsonResponse(serializer.data)
 
     elif request.method == 'PUT':
-        article = JSONParser().parse(request)
-        serializer = ArticleSerializer(data=article)
+        updated_article = JSONParser().parse(request)
+        serializer = ArticleSerializer(article, data=updated_article)
         if serializer.is_valid():
             serializer.save()
             return JsonResponse(serializer.data)
