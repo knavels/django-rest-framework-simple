@@ -10,6 +10,23 @@ from rest_framework import status
 
 from rest_framework.views import APIView
 
+from rest_framework import generics
+from rest_framework import mixins
+
+#######
+# Generic Views
+#######
+
+class ArticleGenericAPIView(generics.GenericAPIView, mixins.ListModelMixin):
+    serializer_class = ArticleSerializer
+    queryset = Article.objects.all()
+
+    def get(self, request):
+        return self.list(request)
+
+
+
+
 #######
 # Class based views
 #######
