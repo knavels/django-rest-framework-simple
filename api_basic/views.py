@@ -19,11 +19,15 @@ from rest_framework import mixins
 #######
 
 class ArticleGenericAPIView(generics.GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixin,
-                            mixins.UpdateModelMixin):
+                            mixins.UpdateModelMixin, mixins.RetrieveModelMixin, mixins.DestroyModelMixin):
     serializer_class = ArticleSerializer
     queryset = Article.objects.all()
+    lookup_field = 'id'
 
-    def get(self, request):
+    def get(self, request, id=None):
+        if id:
+            return self.retrieve(request)
+
         return self.list(request)
 
     def post(self, request):
@@ -31,6 +35,9 @@ class ArticleGenericAPIView(generics.GenericAPIView, mixins.ListModelMixin, mixi
 
     def put(self, request, id=None):
         return self.update(request, id)
+
+    def delete(self, request, id=None):
+        return self.destroy(request, id)
 
 
 #######
