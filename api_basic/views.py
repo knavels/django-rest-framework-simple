@@ -13,11 +13,13 @@ from rest_framework.views import APIView
 from rest_framework import generics
 from rest_framework import mixins
 
+
 #######
 # Generic Views
 #######
 
-class ArticleGenericAPIView(generics.GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixin):
+class ArticleGenericAPIView(generics.GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixin,
+                            mixins.UpdateModelMixin):
     serializer_class = ArticleSerializer
     queryset = Article.objects.all()
 
@@ -26,6 +28,9 @@ class ArticleGenericAPIView(generics.GenericAPIView, mixins.ListModelMixin, mixi
 
     def post(self, request):
         return self.create(request)
+
+    def put(self, request, id=None):
+        return self.update(request, id)
 
 
 #######
@@ -56,7 +61,6 @@ class ArticleShowAPIView(APIView):
         except Article.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-
     def get(self, request, id):
         article = self.get_object(id)
         serializer = ArticleSerializer(article)
@@ -75,6 +79,7 @@ class ArticleShowAPIView(APIView):
         article = self.get_object(id)
         article.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 #######
 # Function based Views
@@ -98,6 +103,7 @@ def article_list(request):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 # @csrf_exempt
 @api_view(['GET', 'PUT', 'DELETE'])
 def article(request, pk):
@@ -106,7 +112,6 @@ def article(request, pk):
 
     except Article.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
-
 
     if request.method == 'GET':
         serializer = ArticleSerializer(article)
